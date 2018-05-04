@@ -4,6 +4,7 @@
 #define EMPTYNODE 'a'
 
 #include <string>
+#include <iostream>
 
 class Trie
 {
@@ -15,10 +16,31 @@ class Trie
                 Node* child;
                 Node* sibling;
                 char value;
+
+                Node(char value) : value(value)
+                {
+                    child = nullptr;
+                    sibling = nullptr;
+                }
+
+                Node()
+                {
+                    child = nullptr;
+                    sibling = nullptr;
+                    value = EMPTYNODE;
+                }
+
+                Node* insert(std::string word)
+                {
+                    std::cout << "\t" << word[0] << std::endl;
+
+
+                    return nullptr;
+                }
         };
 
         Node root;
-        Node* insert(Node t, std::string word);
+        
 
     public:
         Trie();

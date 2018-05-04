@@ -6,10 +6,10 @@
 
 Trie::Trie()
 {
-    root = Node();
+    root = Node(EMPTYNODE);
     root.child = nullptr;
     root.sibling = nullptr;
-    root.value = EMPTYNODE;
+    //root.value = EMPTYNODE;
 }
 
 Trie::~Trie()
@@ -34,39 +34,55 @@ bool Trie::insert(std::string word)
     {
         // Since root did not exist before, it's empty and we can insert
         // value here
-        
         root.value = currentLetter;
-        return insert(*root.child, word.substr(1));
+        root.child = root.insert(word.substr(1));
+        return true;
     }
 
-    // If character exists, traverse and check next
+    // Check if value is already in list, traverse if found
     Node temp = root;
-    while (!temp.sibling)
+    while (temp.sibling)
     {
-        if (temp.value == (currentLetter))
+        std::cout << "Iterating list..." << std::endl;
+
+        if (temp.value == currentLetter)
         {
-            std::cout << "\tFound " << currentLetter << std::endl;
-            temp.child = insert(*temp.child, word.substr(1));
+            std::cout << "Found " << currentLetter << std::endl;
+
+            if(word.length() == 0) 
+            {
+                return false;
+            }
+
+
+            if (!temp.child)
+            {
+                temp.child = new Node(currentLetter);
+            }
+            
+            temp.child = temp.child->insert(word.substr(1));
+            return true;
         }
 
         temp = *temp.sibling;
     }
 
-    // If end of word is reached and that character already exists, 
-    // word is already in trie, can return false
+    std::cout << "Did not find " << currentLetter << ", inserting new node" << std::endl;
+    // Value is not in list, need to add
+    temp.sibling = new Node(currentLetter);
+    temp.sibling->child = new Node();
+    temp.sibling->child = temp.sibling->child->insert(word.substr(1));
 
-    // Else, new word -> add each character at appropriate layer
-
-    return false;
+    return true;
 }
 
-Node* Trie::insert(Node t, std::string word)
-{
-    // std::cout << "\t" <<  << std::endl;
+// Node Node::insert(Node t, std::string word)
+// {
+//     // std::cout << "\t" <<  << std::endl;
 
 
-    return nullptr;
-}
+//     return nullptr;
+// }
 
 int Trie::count()
 {
