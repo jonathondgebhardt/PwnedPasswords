@@ -32,14 +32,69 @@ class Trie
 
                 Node* insert(std::string word)
                 {
-                    std::cout << "\t" << word[0] << std::endl;
+                    if (word.length() < 1)
+                    {
+                        return this;
+                    }
 
+                    bool found = false;
+                    char currentLetter = (char) word[0];
 
-                    return nullptr;
+                    std::cout << "\tIn " << value << " insert" << std::endl;
+                    
+                    // Check if value is already in list, traverse if found
+                    Node* temp = this;
+                    while (temp->sibling)
+                    {
+                        if (temp->value == currentLetter)
+                        {
+                            if (temp->child)
+                            {
+                                temp->child = new Node(currentLetter);
+                            }
+                            
+                            temp->child = temp->child->insert(word.substr(1));
+                            found = true;
+                            break;
+                        }
+
+                        temp = temp->sibling;
+                    }
+
+                    // Value is not in list, need to add
+                    if (!found)
+                    {
+                        std::cout << "In not found statement" << std::endl;
+                        temp->sibling = new Node(currentLetter);
+                        temp->sibling->child = new Node();
+                        temp->sibling->child = temp->sibling->child->insert(word.substr(1));
+                    }
+                    
                 }
+
+                // Checks breadth for target node
+                Node* nodeExists(char target)
+                {
+                    if (!this)
+                    {
+                        return nullptr;
+                    }
+
+                    std::cout << "\t\t" << value << " ?= " << target << std::endl;
+
+                    if (value == target)
+                    {
+                        return this;
+                    }
+
+                    return sibling->nodeExists(target);
+                }
+            
         };
 
         Node root;
+
+        
         
 
     public:
@@ -49,7 +104,8 @@ class Trie
         int count();
         int getSize();
         bool find(std::string prefix);
-        int completeCount(std::string prefix);
+        void display();
+        // friend ostream& operator<<(ostream& os, const MagicBag& mb);
 
 };
 

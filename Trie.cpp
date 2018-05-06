@@ -3,6 +3,7 @@
 #include <iostream>
 
 #define EMPTYNODE 'a'
+#define HASHLENGTH 4
 
 Trie::Trie()
 {
@@ -18,16 +19,21 @@ Trie::~Trie()
     // Should iterate list destroying nodes
 }
 
+/*
+    Insert a new word into the trie. Duplicate words are not allowed. This function
+    returns true if the word is successfully inserted into the trie, and false if the
+    word could not be inserted.
+*/
 bool Trie::insert(std::string word)
 {
-    if (word.length() < 1)
+    // Base case: sha1sum is a 40 char string
+    if (word.length() != HASHLENGTH)
     {
         return false;
     }
 
     char currentLetter = (char) word[0];
-
-    std::cout << "Inserting " << currentLetter << std::endl;
+    std::cout << "Inserting " << word[0] << std::endl;
     
     // If trie is empty, we can insert first character
     if (root.value == EMPTYNODE)
@@ -35,7 +41,8 @@ bool Trie::insert(std::string word)
         // Since root did not exist before, it's empty and we can insert
         // value here
         root.value = currentLetter;
-        root.child = root.insert(word.substr(1));
+        root.child = root.child->insert(word.substr(1));
+        
         return true;
     }
 
@@ -43,18 +50,8 @@ bool Trie::insert(std::string word)
     Node temp = root;
     while (temp.sibling)
     {
-        std::cout << "Iterating list..." << std::endl;
-
         if (temp.value == currentLetter)
         {
-            std::cout << "Found " << currentLetter << std::endl;
-
-            if(word.length() == 0) 
-            {
-                return false;
-            }
-
-
             if (!temp.child)
             {
                 temp.child = new Node(currentLetter);
@@ -67,7 +64,6 @@ bool Trie::insert(std::string word)
         temp = *temp.sibling;
     }
 
-    std::cout << "Did not find " << currentLetter << ", inserting new node" << std::endl;
     // Value is not in list, need to add
     temp.sibling = new Node(currentLetter);
     temp.sibling->child = new Node();
@@ -76,30 +72,43 @@ bool Trie::insert(std::string word)
     return true;
 }
 
-// Node Node::insert(Node t, std::string word)
-// {
-//     // std::cout << "\t" <<  << std::endl;
-
-
-//     return nullptr;
-// }
-
+/*
+    Return the number of words in the trie
+*/
 int Trie::count()
 {
     return -1;
 }
 
+/*
+    Return the total number of nodes in the trie
+*/
 int Trie::getSize()
 {
     return -1;
 }
 
+/*
+    If the given word is in the trie, return true, otherwise return false
+*/
 bool Trie::find(std::string prefix)
 {
     return false;
 }
 
-int Trie::completeCount(std::string prefix)
+/*
+    Print out contents of trie using depth first traversal
+*/
+void Trie::display()
 {
-    return -1;
+    // Print root, this is the first node
+    std::cout << "---Trie contents---\n" << root.value << std::endl;
+
+    Node* temp = root.sibling;
+    while (temp) 
+    {
+        std::cout << temp->value << std::endl;
+        temp = temp->sibling;
+    }
+
 }

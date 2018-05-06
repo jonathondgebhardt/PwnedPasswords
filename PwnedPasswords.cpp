@@ -6,11 +6,19 @@ int main()
 {
     Trie t = Trie();
 
-    std::string s1 = "MooGoo";
-    std::string s2 = "JooGoo";
+    std::string s1 = "abcd";
+    std::string s2 = "wxyz";
 
-    t.insert(s1);
-    // t.insert(s2);
+    // std::cout << &s1[0] << std::endl;
+
+    t.insert("abcd");
+    t.display();
+
+    // t.insert("abce");
+    // t.insert("abc");
+    // t.insert("wxyz");
+
+    // t.display();
 
     return 0;
 }
