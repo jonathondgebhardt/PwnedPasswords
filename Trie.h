@@ -81,11 +81,10 @@ private:
 						temp->sibling->insert(word);
 						return;
 					}
-					
 				}
 
-				// We found the node we're looking for and must create a new
-				// child.
+				// We found the node we're looking for. If it doesn't have a child,
+				// create one and continue inserting.
 				if (word.substr(1).length() >= 1)
 				{
 					if (!temp->child)
@@ -94,10 +93,8 @@ private:
 					}
 
 					temp->child->insert(word.substr(1));
-				}
-				
+				}	
 			}
-			
 		}
 
 		// Checks breadth for target node
@@ -132,9 +129,97 @@ private:
 				std::cout << temp->value << std::endl;
 				temp = temp->sibling;
 			}
-
 		}
 
+		int getWordCount()
+		{
+			int count = 0;
+			// Base case: current node has no children. Since we're at a leaf,
+			// we can stop looking. 
+			if (!this->child)
+			{
+				Node* temp = this;
+				while (temp)
+				{
+					count += 1;
+					temp = temp->sibling;
+				}
+			}
+
+			else
+			{
+				// Iterate for every sibling to current node
+				Node* temp = this;
+				while (temp)
+				{
+					count += temp->child->getWordCount();
+					temp = temp->sibling;
+				}
+			}
+
+			return count;
+		}
+
+		int getSize()
+		{
+			// Base case: current node is past a leaf, do not add
+			// to total count.
+			if (!this)
+			{
+				return 0;
+			}
+
+			// Otherwise, we can still have nodes to iterate over
+			int count = 0;
+			Node* temp = this;
+
+			// Iterate for every sibling to current node
+			while (temp)
+			{
+				count += 1 + temp->child->getSize();
+				temp = temp->sibling;
+			}
+
+			return count;
+		}
+
+		bool find(std::string word)
+		{
+			// Base case: no more letters to check for. Since all sha1sum's
+			// are the same length, if we've run out of letters, the word isn't
+			// in the trie.
+			if (word.length() < 1)
+			{
+				return false;
+			}
+
+			// Otherwise, we have at least one more letter. 
+			char currentLetter = (char)word[0];
+
+			// If there's only one more letter, return true if the current node's
+			// value is the target
+			if (word.length() == 1 && this->value == currentLetter)
+			{
+				return true;
+			}
+
+			// If neither of the above are true, we must look at children or
+			// children of siblings
+			Node* temp = this;
+			while (temp)
+			{
+				// If the bottom of the stack frames return true, keep passing 
+				// up the stack frames
+				if (temp->child->find(word.substr(1)))
+				{
+					return true;
+				}
+
+				temp = temp->sibling;
+			}
+
+			return false;
+		}
 	};
 
 	Node root;
@@ -143,10 +228,10 @@ private:
 public:
 	Trie();
 	~Trie();
-	bool insert(std::string word);
-	int count();
+	void insert(std::string word);
+	int getWordCount();
 	int getSize();
-	bool find(std::string prefix);
+	bool find(std::string word);
 	void display();
 	// friend ostream& operator<<(ostream& os, const MagicBag& mb);
 
