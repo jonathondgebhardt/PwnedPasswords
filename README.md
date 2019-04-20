@@ -1,2 +1,2 @@
-# PwnedPasswords
-Provides an interface with which to check if your password is pwned
+# Trie
+A C++ implementation of the Trie data structure 
